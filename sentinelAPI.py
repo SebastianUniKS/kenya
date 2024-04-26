@@ -31,7 +31,8 @@ def queryAPI(day, y, x):
     prodType = 'S2MSI2A' #,S2MSI1C, S2MS2Ap
     days = str(day)
 
-    API = 'https://scihub.copernicus.eu/dhus/search?q=ingestiondate:[NOW-'+days+'DAY%20TO%20NOW]%20AND%20producttype:'+prodType+'%20AND%20footprint:"Intersects('+footprint+')"&%20rows=100&start=0&format=json'
+    API = 'https://sh.dataspace.copernicus.eu/dhus/search?q=ingestiondate:[NOW-'+days+'DAY%20TO%20NOW]%20AND%20producttype:'+prodType+'%20AND%20footprint:"Intersects('+footprint+')"&%20rows=100&start=0&format=json'
+    #API = 'https://scihub.copernicus.eu/dhus/search?q=ingestiondate:[NOW-'+days+'DAY%20TO%20NOW]%20AND%20producttype:'+prodType+'%20AND%20footprint:"Intersects('+footprint+')"&%20rows=100&start=0&format=json'
     r = requests.get(API,auth=('sebastiannormann', 'Goatscanfly_2022'))
     #print(r)
     global searchResult

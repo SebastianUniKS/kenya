@@ -41,7 +41,7 @@ async def main_page(client: Client):
                 src = 'https://images.climate-data.org/location/11138/climate-graph.png'
                 ii = ui.interactive_image(src, on_mouse=mouse_handler, events=['mousedown', 'mouseup'], cross=True)
             
-### Map ###    
+### Map ############################################################################################################
     map = leaflet().classes('w-full h-96 ')
     ui.markdown('#### Choose your location')
     selection = ui.select(locations,value= (1.7412757745740912, 37.31536534666663), on_change=lambda e: map.set_location(e.value)).classes('w-40')
@@ -111,4 +111,4 @@ async def counter_page(client: Client):
 
 ################################################
 
-ui.run()
+ui.run(favicon='🚀', host="127.0.1.1")
