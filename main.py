@@ -18,6 +18,7 @@ from climate import mouse_handler
 # ui.label("Hello World")
 app.add_static_files('/pics', 'pics')
 
+
 locations = {
     (3.564293995225903, 38.64452830878511): 'Sololo',
     (3.035032763707658, 38.756943658838956):'Amballo',
@@ -43,7 +44,10 @@ async def main_page(client: Client):
                 ii = ui.interactive_image(src, on_mouse=mouse_handler, events=['mousedown', 'mouseup'], cross=True)
             
 ### Map ############################################################################################################
-    map = leaflet().classes('w-full h-96 ')
+    
+    map = leaflet().classes("w-full h-96")
+    
+    
     ui.markdown('#### Choose your location')
     selection = ui.select(locations,value= (1.7412757745740912, 37.31536534666663), on_change=lambda e: map.set_location(e.value)).classes('w-40')
     

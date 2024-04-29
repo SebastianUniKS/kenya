@@ -23,6 +23,11 @@ export default {
                 transparent: 'true',
                 format: 'image/png',
             }),
+            Amballo_2024_Feb: L.tileLayer.wms(geoserver, {
+              layers: 'classified_sololo_20240212',
+              transparent: 'true',
+              format: 'image/png',
+           }),
             // what_is_here: L.tileLayer.wms(geoserver,{
             //     layers: "whats_here",
             //     transparent: 'true',
@@ -38,6 +43,7 @@ export default {
     
         basemaps.OSM.addTo(this.map);
         overlay.latest_Classification.addTo(this.map);
+        overlay.Amballo_2024_Feb.addTo(this.map);
 
     },
    
