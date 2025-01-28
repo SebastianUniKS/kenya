@@ -7,6 +7,7 @@ from leaflet import leaflet
 from db import spatialite
 
 from sentinelAPI import *
+from uploadCropStack import *
 
 from counter import Counter
 
@@ -17,10 +18,13 @@ from climate import mouse_handler
 # ui.label("Hello World")
 app.add_static_files('/pics', 'pics')
 
+
 locations = {
+    (3.564293995225903, 38.64452830878511): 'Sololo',
+    (3.035032763707658, 38.756943658838956):'Amballo',
     (1.7412757745740912, 37.31536534666663): 'Ngurunit',
     (2.322920338801376, 37.99268689194787): 'Marsabit',
-    (-18.373, 18.073): 'somewhere in Namibia',
+    (-18.176413901509832, 20.91621324764841): 'somewhere in Namibia',
     (51.350300480813004, 9.855289171837422): 'WIZ Agrartechnik'
 
 }
@@ -39,8 +43,11 @@ async def main_page(client: Client):
                 src = 'https://images.climate-data.org/location/11138/climate-graph.png'
                 ii = ui.interactive_image(src, on_mouse=mouse_handler, events=['mousedown', 'mouseup'], cross=True)
             
-### Map ###    
-    map = leaflet().classes('w-full h-96 ')
+### Map ############################################################################################################
+    
+    map = leaflet().classes("w-full h-96")
+    
+    
     ui.markdown('#### Choose your location')
     selection = ui.select(locations,value= (1.7412757745740912, 37.31536534666663), on_change=lambda e: map.set_location(e.value)).classes('w-40')
     
@@ -51,21 +58,41 @@ async def main_page(client: Client):
 ### DB interaction ###
     #db =  spatialite()
 #####################################################################################################################
-### Query Sentinel API ###
-    
-    days = 10
-    
-    #ui.input(label='Text', placeholder='start typing',
-    #     on_change=lambda e: result.set_text('you typed: ' + e.value),
-    #     validation={'Input too long': lambda value: len(value) < 20})
-    
+    # with ui.tabs().classes('w-full') as tabs:
+    #     one = ui.tab('get Data')
+    #     two = ui.tab('upload Data')
+    #     three = ui.tab('Display Data')
+    # with ui.tab_panels(tabs).classes('w-full'):
+    #     with ui.tab_panel(one):
+    # ### Query Sentinel API ###   
+    #         days = 10
+            
+    #         ui.markdown('### Get some data..')
+    #         days = ui.number(label='for the last ... days.', value=days)
+    #         #print (days.value)
+    #         #print(selection.value)
+            
+    #         ui.button('Query Sentinel API!', on_click=lambda: queryAPI (int(days.value),float(selection.value[1]),float(selection.value[0])))
+    #         imageID = ui.number(label='Image ID')
+            
+    #         ui.button('Download!', on_click=lambda: getSatelliteData(int(imageID.value)))
+    #         # ui.button('Download Sentinel Image'on_click=lambda: ui.download(downloadLink))
+        
+    #     with ui.tab_panel(two):
+    #         #ui.upload(on_upload=lambda e: uploadAOI()).classes('max-w-full')
+    #         ui.label('Upload your AreaOfInterest:')
+    #         aoi = uploadAOI()
+    #         ui.label('Upload Band 2,3,4,8:')
+    #         satBand = uploadBand()
 
-    ui.markdown('### Get some data..')
-    days = ui.number(label='for the last ... days.', value=days)
-    print (days.value)
-    print(selection.value)
-    ui.button('Query Sentinel API!', on_click=lambda: queryAPI (int(days.value),float(selection.value[1]),float(selection.value[0])))
-    
+    with ui.tab_panel(three):    
+        roi = getDBdata('aoi')
+        ui.label('Choose your AOI.')
+        availableAOI = ui.select(roi, value = 1).classes('max-w-40')
+        #ui.button('Display AOI ..', on_click=lambda: loadAOI(availableAOI))
+        ui.button('test')
+
+
 #####################################################################################################################
 ### Custom ###
     #ui.link('Checkout the custom vue component', '/counter')
@@ -85,9 +112,8 @@ async def counter_page(client: Client):
     with ui.card():
         counter = Counter('Clicks', on_change=lambda msg: ui.notify(f'The value changed to {msg["args"]}.'))
 
-
     ui.button('Reset', on_click=counter.reset).props('small outline')
 
 ################################################
 
-ui.run()
+ui.run(favicon='🚀', host="127.0.1.1")

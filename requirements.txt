@@ -1,2 +1,13 @@
 nicegui
-sqlite3
+pygments
+requests
+#zipfile
+pandas
+geopandas
+rasterio
+xarray
+rioxarray
+earthpy
+shapely
+#sqlite3
+opencv-python

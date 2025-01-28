@@ -16,29 +16,34 @@ export default {
             }),
         }
     //   geoserver
-        var geoserver = 'http://141.51.249.91:8080/geoserver/marsabit/wms?'
+        var geoserver = "http://141.51.249.175:8081/geoserver/InfoRange/wms?"
         var overlay = { 
-            NDVI_20220930: L.tileLayer.wms(geoserver, {
-                layers: 'NDVI_20220930',
+            latest_Classification: L.tileLayer.wms(geoserver, {
+                layers: 'latest_classification_amballo',
                 transparent: 'true',
                 format: 'image/png',
             }),
-            what_is_here: L.tileLayer.wms(geoserver,{
-                layers: "whats_here",
-                transparent: 'true',
-                format: 'image/png',
-            }),
+            Amballo_2024_Feb: L.tileLayer.wms(geoserver, {
+              layers: 'classified_sololo_20240212',
+              transparent: 'true',
+              format: 'image/png',
+           }),
+            // what_is_here: L.tileLayer.wms(geoserver,{
+            //     layers: "whats_here",
+            //     transparent: 'true',
+            //     format: 'image/png',
+            // }),
         }
 
         var pointLayer = {
 
         }
     
-  
         L.control.layers(basemaps, overlay).addTo(this.map);
     
         basemaps.OSM.addTo(this.map);
-        overlay.what_is_here.addTo(this.map);
+        overlay.latest_Classification.addTo(this.map);
+        overlay.Amballo_2024_Feb.addTo(this.map);
 
     },
    
