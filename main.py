@@ -6,6 +6,8 @@ from pygments import *
 from leaflet import leaflet
 from db import spatialite
 
+from queryInfoRangeAPI import getGPSdata
+
 from sentinelAPI import *
 from uploadCropStack import *
 
@@ -35,9 +37,9 @@ async def main_page(client: Client):
     ui.markdown('### Should I stay or should I go?')
 
     with ui.row():
-### weather ####
+### weather #######################################################################################################
         #Weather()
-### climate ####
+### climate #######################################################################################################
         with ui.expansion('Marsabit climate diagram!', icon='open_with').classes('w-full'):
             with ui.card():
                 src = 'https://images.climate-data.org/location/11138/climate-graph.png'
@@ -53,7 +55,34 @@ async def main_page(client: Client):
     
     await client.connected()  # wait for websocket connection
 
- 
+
+### GPS Data #########################################################################################################
+    
+    ui.markdown('#### Query the InfoRange API')
+    
+    def getDate(date_value):
+        ui.notify(f'You selected: {date_value}')
+        startDate = date_value[:10]+" 00:00:00"
+        endDate = date_value[13:24]+" 23:59:59"
+        #print(startDate, "to", endDate)
+        GPSdata = getGPSdata(startDate,endDate)
+        ui.notify(f'Result: {GPSdata}')
+        print(GPSdata)
+
+    date_input = ui.input('Date range').classes('w-40')
+    
+    ui.date().props('range').bind_value(
+        date_input,
+        forward=lambda x: f'{x["from"]} - {x["to"]}' if x else None,
+        backward=lambda x: {
+            'from': x.split(' - ')[0],
+            'to': x.split(' - ')[1],
+        } if ' - ' in (x or '') else None,
+    )
+   
+    ui.button('get location data', on_click=lambda: getDate(date_input.value))
+
+
 #####################################################################################################################   
 ### DB interaction ###
     #db =  spatialite()
@@ -85,12 +114,12 @@ async def main_page(client: Client):
     #         ui.label('Upload Band 2,3,4,8:')
     #         satBand = uploadBand()
 
-    with ui.tab_panel(three):    
-        roi = getDBdata('aoi')
-        ui.label('Choose your AOI.')
-        availableAOI = ui.select(roi, value = 1).classes('max-w-40')
-        #ui.button('Display AOI ..', on_click=lambda: loadAOI(availableAOI))
-        ui.button('test')
+        # with ui.tab_panel(three):    
+        #     roi = getDBdata('aoi')
+        #     ui.label('Choose your AOI.')
+        #     availableAOI = ui.select(roi, value = 1).classes('max-w-40')
+        #     #ui.button('Display AOI ..', on_click=lambda: loadAOI(availableAOI))
+        #     ui.button('test')
 
 
 #####################################################################################################################
