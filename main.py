@@ -4,7 +4,7 @@ from nicegui import Client, ui, app
 from pygments import *
 
 from leaflet import leaflet
-from db import spatialite
+from db import * # spatialite, getPointsDB , showPoints
 
 from queryInfoRangeAPI import getGPSdata
 
@@ -19,6 +19,8 @@ from climate import mouse_handler
 
 # ui.label("Hello World")
 app.add_static_files('/pics', 'pics')
+app.add_static_files('/static', 'static')
+
 
 
 locations = {
@@ -33,7 +35,7 @@ locations = {
 
 @ui.page('/')
 async def main_page(client: Client):
-
+    ui.add_body_html('<script src="static/leaflet.js"></script>')
     ui.markdown('### Should I stay or should I go?')
 
     with ui.row():
@@ -47,9 +49,9 @@ async def main_page(client: Client):
             
 ### Map ############################################################################################################
     
-    map = leaflet().classes("w-full h-96")
-    
-    
+    map = leaflet().props('id=InfoRangeMap').classes("w-full h-96")
+    print("the map id is: ",map.id)    
+        
     ui.markdown('#### Choose your location')
     selection = ui.select(locations,value= (1.7412757745740912, 37.31536534666663), on_change=lambda e: map.set_location(e.value)).classes('w-40')
     
@@ -82,6 +84,14 @@ async def main_page(client: Client):
    
     ui.button('get location data', on_click=lambda: getDate(date_input.value))
 
+    def getPoints():
+        points = getPointsDB('coordinates')
+        ui.notify(f'Points: {points}')
+        if points:
+           ui.button('Show Points', on_click=lambda: showPoints(points))
+
+
+    ui.button('process points', on_click=lambda: getPoints())
 
 #####################################################################################################################   
 ### DB interaction ###
@@ -144,5 +154,6 @@ async def counter_page(client: Client):
     ui.button('Reset', on_click=counter.reset).props('small outline')
 
 ################################################
+#leaflet.set_point((51.505, -0.09))
 
 ui.run(favicon='🚀', host="127.0.1.1")

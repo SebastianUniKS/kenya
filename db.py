@@ -3,6 +3,8 @@ from nicegui import ui
 
 from nicegui.element import Element
 
+from leaflet import leaflet
+
 conn = sqlite3.connect("app.sqlite")
 cursor = conn.cursor()
 
@@ -67,6 +69,32 @@ def getData():
                          ui.button("edit").on("click", lambda e, carddata=carddata : editData(carddata))
                          ui.button("delete").on("click", lambda e, carddata=carddata : deleteData(carddata)).classes("bg-red")
 
-getData()
+# getData()
+
+inforangeDB  = "./buildInDB.sqlite"
+
+
+def getPointsDB(table_name):
+    inforangeDB  = "./buildInDB.sqlite"
+    """Fetch point data (latitude, longitude) from a SpatiaLite database."""
+    connection = sqlite3.connect(inforangeDB)
+    connection.enable_load_extension(True)
+    connection.load_extension('mod_spatialite')
+    cursor = connection.cursor()
+
+    # Example query to retrieve point data (adjust table and column names as needed)
+    query = f"SELECT ST_X(geom), ST_Y(geom), captured_at FROM {table_name} order by captured_at desc limit 100"
+    cursor.execute(query)
+    points = cursor.fetchall()
+
+    connection.close()
+    return points  # Returns a list of tuples: [(lon, lat, name), ...]
+
+def showPoints(points):
+     for point_lon, point_lat, created_at in points:
+            ui.run_javascript(f'''
+                set_point({point_lat}, {point_lon});
+            ''')
+
 
 ui.run()
